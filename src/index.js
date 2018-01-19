@@ -7,9 +7,11 @@ class App extends React.Component {
     super(props)
     this.state = {
       persons: [
-        { name: 'Arto Hellas'}
+        { name: 'Arto Hellas',
+            number: '040-123456'}
       ],
-      newName: ''
+      newName: '',
+      newNumber: ''
     }
     }
 
@@ -17,10 +19,16 @@ class App extends React.Component {
         this.setState({newName: event.target.value})   
     }
 
+    handleNumberChange = (event) => {
+        this.setState({newNumber: event.target.value})
+    }
+
+
+    /* Tehty henkilön ja numeron perusteella */ 
     isPersonOnTheList = () => {
         let arvo = false
         this.state.persons.forEach((person) => { 
-            if (person.name === this.state.newName) {
+            if (person.name === this.state.newName || person.number === this.state.newNumber) {
                 arvo = true
 
             } 
@@ -34,9 +42,9 @@ class App extends React.Component {
             alert('Tämä henkilö löytyy jo listalta!')  
         } else {
             let newList = this.state.persons.slice()
-            {newList.push({name: this.state.newName})
+            {newList.push({name: this.state.newName, number:this.state.newNumber })
                 this.setState({persons: newList,
-                            newName: ''
+                            newName: '', newNumber: ''
                             })}
             
         }
@@ -48,7 +56,7 @@ class App extends React.Component {
                 {this.state.persons.map((person) => {
                     return (
                         <div key={person.name}>
-                            {person.name}
+                            {person.name} {person.number}
                         </div>
                     )
                 })} 
@@ -65,6 +73,10 @@ class App extends React.Component {
                 nimi: <input value={this.state.newName}
                             onChange={this.handleNameChange}/>
             </div>
+            <div>
+                numero: <input value={this.state.newNumber}
+                            onChange={this.handleNumberChange}/>
+            </div>    
             <div>
                 <button type="submit">lisää</button>
             </div>    
