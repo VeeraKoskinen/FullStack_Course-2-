@@ -17,13 +17,29 @@ class App extends React.Component {
         this.setState({newName: event.target.value})   
     }
 
+    isPersonOnTheList = () => {
+        let arvo = false
+        this.state.persons.forEach((person) => { 
+            if (person.name === this.state.newName) {
+                arvo = true
+
+            } 
+        })    
+        return arvo      
+    }
+
     addNewPerson = (event) => {
         event.preventDefault()
-        let newList = this.state.persons.slice()
-        newList.push({name: this.state.newName})
-        this.setState({persons: newList,
-                        newName: ''
-                        })
+        if (this.isPersonOnTheList()) {
+            alert('Tämä henkilö löytyy jo listalta!')  
+        } else {
+            let newList = this.state.persons.slice()
+            {newList.push({name: this.state.newName})
+                this.setState({persons: newList,
+                            newName: ''
+                            })}
+            
+        }
     }
 
     personListing = () => {
