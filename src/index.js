@@ -1,7 +1,21 @@
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
 import React from 'react';
+import Input from './components/Input';
+import AddingForm from './components/AddingForm';
 
-
+/*
+const AddingForm = (props) => {
+    return (
+        <form onSubmit={props.onSubmit}>
+            <Input name={"nimi:"} newInput={props.newInput1} handler={props.handler1}/>
+            <Input name={"numero"} newInput={props.newInput2} handler={props.handler2}/>
+            <div>
+                <button type="submit">lisää</button>
+            </div> 
+        </form>    
+    )
+}
+*/
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -12,24 +26,12 @@ class App extends React.Component {
         { name: 'Arto Järvinen', number: '040-123456' },
         { name: 'Lea Kutvonen', number: '040-123456' }
       ],
-      newName: '',
-      newNumber: '',
       filter: ''
     }
     }
 
-    handleNameChange = (event) => {
-        this.setState({newName: event.target.value})   
-    }
-
-    handleNumberChange = (event) => {
-        this.setState({newNumber: event.target.value})
-    }
-
     handleFilterChange = (event) => {
         this.setState({filter: event.target.value})
-        console.log(this.state.filter)
-        /* tänne filtteröinti */
     }
     
     makeFilteredList = () => {
@@ -46,31 +48,30 @@ class App extends React.Component {
             return false }
     }
 
-    /* Tehty henkilön ja numeron perusteella */ 
-    isPersonOnTheList = () => {
+    /* Tehty henkilön ja numeron perusteella  */
+    isPersonOnTheList = (newPerson) => {
         let arvo = false
         this.state.persons.forEach((person) => { 
-            if (person.name === this.state.newName || person.number === this.state.newNumber) {
+            if (person.name === newPerson.name || person.number === newPerson.number) {
                 arvo = true
-
+        
             } 
         })    
         return arvo      
-    }
+    } 
 
-    addNewPerson = (event) => {
-        event.preventDefault()
-        if (this.isPersonOnTheList()) {
+    addNewPerson = (newPerson) => {
+        if (this.isPersonOnTheList(newPerson)) {
             alert('Tämä henkilö löytyy jo listalta!')  
         } else {
             let newList = this.state.persons.slice()
-            {newList.push({name: this.state.newName, number:this.state.newNumber })
-                this.setState({persons: newList,
-                            newName: '', newNumber: ''
-                            })}
-            
-        }
+            newList.push(newPerson)
+            this.setState({persons: newList})
+        }            
+        
     }
+
+    
 
     personListing = () => {
         return (
@@ -90,24 +91,9 @@ class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
-        rajaa näytettäviä: <input value={this.state.filter}
-                                  onChange={this.handleFilterChange}  />
-
+        <Input name={"rajaa näytettäviä"} value={this.state.filter} handler={this.handleFilterChange} />
         <h3>Lisää uusi</h3>
-        <form onSubmit={this.addNewPerson}>
-            <div>
-                nimi: <input value={this.state.newName}
-                            onChange={this.handleNameChange}/>
-            </div>
-            <div>
-                numero: <input value={this.state.newNumber}
-                            onChange={this.handleNumberChange}/>
-            </div>    
-            <div>
-                <button type="submit">lisää</button>
-            </div>    
-        </form>
-
+        <AddingForm function={this.addNewPerson}/>
         <h3>Numerot</h3>
         <div>
             {this.personListing()}
