@@ -7,11 +7,14 @@ class App extends React.Component {
     super(props)
     this.state = {
       persons: [
-        { name: 'Arto Hellas',
-            number: '040-123456'}
+        { name: 'Arto Hellas', number: '040-123456' },
+        { name: 'Martti Tienari', number: '040-123456' },
+        { name: 'Arto Järvinen', number: '040-123456' },
+        { name: 'Lea Kutvonen', number: '040-123456' }
       ],
       newName: '',
-      newNumber: ''
+      newNumber: '',
+      filter: ''
     }
     }
 
@@ -23,6 +26,25 @@ class App extends React.Component {
         this.setState({newNumber: event.target.value})
     }
 
+    handleFilterChange = (event) => {
+        this.setState({filter: event.target.value})
+        console.log(this.state.filter)
+        /* tänne filtteröinti */
+    }
+    
+    makeFilteredList = () => {
+        return this.state.persons.filter(person => this.checkPerson(person))        
+    }
+
+    checkPerson = (person) => {
+        let inStudy = person.name.toLowerCase()
+        if (inStudy.includes(this.state.filter.toLowerCase())) {
+            console.log("true")
+            return true }
+        else {
+            console.log("false")
+            return false }
+    }
 
     /* Tehty henkilön ja numeron perusteella */ 
     isPersonOnTheList = () => {
@@ -53,7 +75,7 @@ class App extends React.Component {
     personListing = () => {
         return (
             <div>
-                {this.state.persons.map((person) => {
+                {this.makeFilteredList().map((person) => {
                     return (
                         <div key={person.name}>
                             {person.name} {person.number}
@@ -68,6 +90,10 @@ class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
+        rajaa näytettäviä: <input value={this.state.filter}
+                                  onChange={this.handleFilterChange}  />
+
+        <h3>Lisää uusi</h3>
         <form onSubmit={this.addNewPerson}>
             <div>
                 nimi: <input value={this.state.newName}
@@ -82,7 +108,7 @@ class App extends React.Component {
             </div>    
         </form>
 
-        <h2>Numerot</h2>
+        <h3>Numerot</h3>
         <div>
             {this.personListing()}
             debug: {this.state.newName}
