@@ -2,32 +2,15 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import Input from './components/Input';
 import AddingForm from './components/AddingForm';
+import axios from 'axios'
 
-/*
-const AddingForm = (props) => {
-    return (
-        <form onSubmit={props.onSubmit}>
-            <Input name={"nimi:"} newInput={props.newInput1} handler={props.handler1}/>
-            <Input name={"numero"} newInput={props.newInput2} handler={props.handler2}/>
-            <div>
-                <button type="submit">lisää</button>
-            </div> 
-        </form>    
-    )
-}
-*/
 class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      persons: [
-        { name: 'Arto Hellas', number: '040-123456' },
-        { name: 'Martti Tienari', number: '040-123456' },
-        { name: 'Arto Järvinen', number: '040-123456' },
-        { name: 'Lea Kutvonen', number: '040-123456' }
-      ],
-      filter: ''
-    }
+    constructor(props) {
+        super(props)
+        this.state = {
+            persons: [],
+            filter: ''
+        }
     }
 
     handleFilterChange = (event) => {
@@ -35,7 +18,13 @@ class App extends React.Component {
     }
     
     makeFilteredList = () => {
-        return this.state.persons.filter(person => this.checkPerson(person))        
+        console.log("henkilölista ennen:")
+        console.log(this.state.persons)
+        console.log("state:")
+        console.log(this.state)
+        return this.state.persons.filter(person => this.checkPerson(person))  
+        console.log("henkilölistaus jälkeen:")
+        console.log(this.state.persons)  
     }
 
     checkPerson = (person) => {
@@ -71,8 +60,6 @@ class App extends React.Component {
         
     }
 
-    
-
     personListing = () => {
         return (
             <div>
@@ -87,6 +74,19 @@ class App extends React.Component {
         )
     }
 
+    componentWillMount() {
+        console.log('will mount')
+        axios
+            .get('http://localhost:3001/persons')
+            .then(response => { 
+                const db = response.data
+                console.log(db)
+                console.log("promise fullfilled")
+                this.setState({persons: response.data})
+                console.log(this.state.persons)
+        })
+    }
+
   render() {
     return (
       <div>
@@ -97,7 +97,6 @@ class App extends React.Component {
         <h3>Numerot</h3>
         <div>
             {this.personListing()}
-            debug: {this.state.newName}
         </div>
       </div>
     )
