@@ -3,6 +3,7 @@ import React from 'react';
 import Input from './components/Input';
 import AddingForm from './components/AddingForm';
 import axios from 'axios'
+import personService from './services/persons'
 
 class App extends React.Component {
     constructor(props) {
@@ -54,12 +55,21 @@ class App extends React.Component {
                 number : newPerson.number
             }
 
+            personService
+            .create(personObject)
+            .then(response => {
+                this.setState({
+                    persons: this.state.persons.concat(response.data),
+                })
+            })
+/*
             axios.post('http://localhost:3001/persons', personObject)
             .then(response => {
                 this.setState({persons: this.state.persons.concat(response.data)})
             })
+            */ 
         }            
-        
+       
     }
 
     personListing = () => {
@@ -67,7 +77,7 @@ class App extends React.Component {
             <div>
                 {this.makeFilteredList().map((person) => {
                     return (
-                        <div key={person.name}>
+                        <div key={person.id}>
                             {person.name} {person.number}
                         </div>
                     )
@@ -76,6 +86,7 @@ class App extends React.Component {
         )
     }
 
+/*  vanha palanen 
     componentWillMount() {
         console.log('will mount')
         axios
@@ -86,6 +97,20 @@ class App extends React.Component {
                 console.log(this.state.persons)
         })
     }
+*/
+
+/* uudet palaset */
+
+    componentDidMount() {
+        personService
+            .getAll()
+            .then(response => {
+                this.setState({persons: response.data})
+            })
+    }
+
+
+/* uusi osa päättyy */    
 
     render() {
         return (
