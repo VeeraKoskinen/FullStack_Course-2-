@@ -3,3 +3,32 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+h1 {
+  color: rgb(214, 19, 166);
+  font-style: italic;
+}
+
+h3 {
+  color: rgb(240, 85, 201);
+}
+
+.error {
+  color: rgb(255, 0, 128);
+  background: rgb(175, 173, 173);
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 7px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.notification {
+  color: rgb(0, 255, 106);
+  background: rgb(28, 41, 33);
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 7px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

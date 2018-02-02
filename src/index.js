@@ -2,8 +2,10 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import Input from './components/Input';
 import AddingForm from './components/AddingForm';
-import axios from 'axios'
-import personService from './services/persons'
+import axios from 'axios';
+import personService from './services/persons';
+import Notification from './components/Notification';
+import './index.css'
 
 class App extends React.Component {
     constructor(props) {
@@ -11,6 +13,7 @@ class App extends React.Component {
         this.state = {
             persons: [],
             filter: '',
+            notification: null
         }
     }
 
@@ -21,6 +24,13 @@ class App extends React.Component {
     
     makeFilteredList = () => {
         return this.state.persons.filter(person => this.checkPerson(person))  
+    }
+
+    updateNotification = (message) => {
+        this.setState({notification: message})
+        setTimeout(() => {
+            this.setState({notification: null})
+          }, 4000)
     }
 
     checkPerson = (person) => {
@@ -50,9 +60,11 @@ class App extends React.Component {
            if(window.confirm(`'${newPerson.name}' on jo luettelossa, korvataanko vanha numero uudella?`))  {
             personService
                .update(id, newPerson)
-               .then(response => {               
+               .then(response => {    
+                    this.updateNotification(`Numeron muutos onnistui henkilölle ${newPerson.name}!`)           
                     this.updateChanges()
                 })
+                
             }  
         } else {
             const personObject = {
@@ -61,7 +73,8 @@ class App extends React.Component {
             }
             personService
             .create(personObject)
-            .then(response => {
+            .then(notification => {
+                this.updateNotification(`Lisättiin: ${personObject.name}`)
                 this.updateChanges()
             })
         }                   
@@ -72,8 +85,9 @@ class App extends React.Component {
         if(window.confirm(`Poistetaanko '${person.name}'?`)) {
             personService            
             .remove(id)
-            .then(response => 
-                {this.updateChanges()
+            .then(response => {
+                this.updateNotification(`Poistettiin onnistuneesti ${person.name}!`)
+                this.updateChanges()
             })
             .catch(error => {
                 console.log("Error poistettaessa!!")
@@ -111,7 +125,11 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <h2>Puhelinluettelo</h2>
+
+                <h1>Puhelinluettelo</h1>
+               
+                <Notification message={this.state.notification}/>
+           
                 <Input name={"rajaa näytettäviä"} value={this.state.filter} handler={this.handleFilterChange} />
                 <h3>Lisää uusi</h3>
                 <AddingForm function={this.addNewPerson}/>
