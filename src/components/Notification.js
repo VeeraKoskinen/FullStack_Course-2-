@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom';
 import React from 'react';
 
 class Notification extends React.Component {
@@ -12,7 +11,7 @@ class Notification extends React.Component {
             return null
         }
         return (
-            <div className="notification">
+            <div className={this.props.className}>
                 {this.props.message}
             </div>
         )

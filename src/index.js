@@ -13,7 +13,8 @@ class App extends React.Component {
         this.state = {
             persons: [],
             filter: '',
-            notification: null
+            notification: null,
+            error: null
         }
     }
 
@@ -30,6 +31,13 @@ class App extends React.Component {
         this.setState({notification: message})
         setTimeout(() => {
             this.setState({notification: null})
+          }, 3000)
+    }
+
+    updateError = (message) => {
+        this.setState({error: message})
+        setTimeout(() => {
+            this.setState({error: null})
           }, 4000)
     }
 
@@ -64,6 +72,9 @@ class App extends React.Component {
                     this.updateNotification(`Numeron muutos onnistui henkilölle ${newPerson.name}!`)           
                     this.updateChanges()
                 })
+                .catch(error => {
+                    this.updateError("Muutos epäonnistui!")
+                })
                 
             }  
         } else {
@@ -91,6 +102,8 @@ class App extends React.Component {
             })
             .catch(error => {
                 console.log("Error poistettaessa!!")
+                this.updateError("Tämä henkilö on jo aiemmin poistettu puhelinluettelosta.")
+                this.updateChanges()
             })
         }           
     }
@@ -128,10 +141,11 @@ class App extends React.Component {
 
                 <h1>Puhelinluettelo</h1>
                
-                <Notification message={this.state.notification}/>
-           
+                <Notification message={this.state.notification} className={"notification"}/>
+                <Notification message={this.state.error} className={"error"}/>
+
                 <Input name={"rajaa näytettäviä"} value={this.state.filter} handler={this.handleFilterChange} />
-                <h3>Lisää uusi</h3>
+                <h3>Lisää uusi / muuta olemassaolevaa numeroa</h3>
                 <AddingForm function={this.addNewPerson}/>
                 <h3>Numerot</h3>
 
