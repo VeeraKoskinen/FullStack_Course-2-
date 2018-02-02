@@ -10,9 +10,10 @@ class App extends React.Component {
         super(props)
         this.state = {
             persons: [],
-            filter: ''
+            filter: '',
         }
     }
+
 
     handleFilterChange = (event) => {
         this.setState({filter: event.target.value})
@@ -33,21 +34,26 @@ class App extends React.Component {
         }
     }
 
-    /* Tehty henkilön ja numeron perusteella  */
     isPersonOnTheList = (newPerson) => {
-        let arvo = false
+        let id = undefined
         this.state.persons.forEach((person) => { 
-            if (person.name === newPerson.name || person.number === newPerson.number) {
-                arvo = true        
+            if (person.name === newPerson.name) {
+                id = person.id 
             } 
         })    
-        return arvo      
+        return id     
     } 
 
     addNewPerson = (newPerson) => {
-
-        if (this.isPersonOnTheList(newPerson)) {
-            alert('Tämä henkilö löytyy jo listalta!')  
+        const id = this.isPersonOnTheList(newPerson) 
+        if ( id !== undefined) {
+           if(window.confirm(`'${newPerson.name}' on jo luettelossa, korvataanko vanha numero uudella?`))  {
+            personService
+               .update(id, newPerson)
+               .then(response => {               
+                    this.updateChanges()
+                })
+            }  
         } else {
 
             const personObject = {
@@ -58,18 +64,23 @@ class App extends React.Component {
             personService
             .create(personObject)
             .then(response => {
-                this.setState({
-                    persons: this.state.persons.concat(response.data),
-                })
+                this.updateChanges()
             })
-/*
-            axios.post('http://localhost:3001/persons', personObject)
-            .then(response => {
-                this.setState({persons: this.state.persons.concat(response.data)})
+        }                   
+    }
+
+    deletePerson = (id) => {
+        const person = this.state.persons.find(n => n.id === id)
+        if(window.confirm(`Poistetaanko '${person.name}'?`)) {
+            personService            
+            .remove(id)
+            .then(response => 
+                {this.updateChanges()
             })
-            */ 
-        }            
-       
+            .catch(error => {
+                console.log("Error poistettaessa!!")
+            })
+        }           
     }
 
     personListing = () => {
@@ -79,6 +90,7 @@ class App extends React.Component {
                     return (
                         <div key={person.id}>
                             {person.name} {person.number}
+                            <button onClick={() => this.deletePerson(person.id)}>poista</button>
                         </div>
                     )
                 })} 
@@ -86,31 +98,17 @@ class App extends React.Component {
         )
     }
 
-/*  vanha palanen 
-    componentWillMount() {
-        console.log('will mount')
-        axios
-            .get('http://localhost:3001/persons')
-            .then(response => {  
-                console.log("promise fullfilled")
-                this.setState({persons: response.data})
-                console.log(this.state.persons)
+    updateChanges = () => {
+        personService
+        .getAll()
+        .then(response => {
+            this.setState({persons: response.data})
         })
     }
-*/
-
-/* uudet palaset */
 
     componentDidMount() {
-        personService
-            .getAll()
-            .then(response => {
-                this.setState({persons: response.data})
-            })
-    }
-
-
-/* uusi osa päättyy */    
+        this.updateChanges()
+    }  
 
     render() {
         return (

@@ -9,8 +9,15 @@ const create = (newObject) => {
     return axios.post(baseUrl, newObject)
 }
 
-const update = (id, newObject) => {
-    return axios.put(`${baseUrl}/${id}`, newObject)
+const remove = (id) => {
+    console.log("poistometodissa")
+    return axios.delete(`${baseUrl}/${id}`)
 }
 
-export default { getAll, create, update }
+const update = (id, newPerson) => {
+    console.log("päivitysmetodissa")
+    const request = axios.put(`${baseUrl}/${id}`, newPerson)
+    return request.then(response => response.data)
+}
+
+export default { getAll, create, remove, update }
