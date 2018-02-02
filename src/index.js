@@ -55,12 +55,10 @@ class App extends React.Component {
                 })
             }  
         } else {
-
             const personObject = {
                 name : newPerson.name,
                 number : newPerson.number
             }
-
             personService
             .create(personObject)
             .then(response => {
