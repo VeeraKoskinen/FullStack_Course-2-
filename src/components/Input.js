@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom'
 import React from 'react';
 
 class Input extends React.Component {

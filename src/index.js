@@ -147,8 +147,8 @@ class App extends React.Component {
                 <Input name={"rajaa näytettäviä"} value={this.state.filter} handler={this.handleFilterChange} />
                 <h3>Lisää uusi / muuta olemassaolevaa numeroa</h3>
                 <AddingForm function={this.addNewPerson}/>
+                
                 <h3>Numerot</h3>
-
                 <div>
                     {this.personListing()}
                 </div>
